@@ -25,27 +25,26 @@ class ExpenseController < ApplicationController
       if index == 0
         info["restaurant_name"] = line
       else
-        
         amount = line.match(/\$?[0-9,]+(\.[0-9]{1,2})?/).to_s
-        puts "print amount: #{amount}"
         if amount.length > 3
           info["amount"] = amount
         end
-        
-        date = line.match(/(\d{2,4}[\/\.]\d{1,2}[\/\.]\d{1,2})|(\d{1,2}[\/\.]\d{1,2}[\/\.]\d{2,4})/)
+        date = line.match(/((?:19|20)\d{2}[\/\.]\d{1,2}[\/\.]\d{1,2})|(\d{1,2}[\/\.]\d{1,2}[\/\
+        .](19|20)?\d{2})/)
         if date
+          puts date.to_s
           info["date"] = date.to_s
         end
       end
     }
     info
   end
-
+  # /^(0[1-9]|1[012])[-\/.](0[1-9]|[12][0-9]|3[01])([-\/.](?:19|20)\d\d)$/
   def upload
     # puts request.body.read
     if params[:file]
       file = params[:file]
-      path = params[:file].original_filename
+      path = "public/" + params[:file].original_filename
 
       File.open(path, "wb") {|f| f.write(params[:file].read)}
       image = RTesseract.new(path)
